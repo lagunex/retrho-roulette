@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en" ng-app="RetrhoRoullete">
+<head>
+    <meta charset="utf-8">
+    <title>Retrho Roullete</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.8/angular.min.js"></script>
+    <script src="exercise.js"></script>
+</head>
+
+<body ng-controller="ExerciseCtrl">
+    <div>
+        <div>Add {{ exercisesToAdd }} exercises to your workout</div>
+        <form ng-if="exercises.length < numberOfExercises" ng-submit="addExercise()">
+            Exercise: <input ng-model="newExercise" type="text" />
+            <input type="submit" value="Add" />
+        </form>
+        <div>
+            <ul>
+                <li ng-repeat="ex in exercises" class="{{ex.class}}">
+                    {{ ex.name }}
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div>
+        <button
+          ng-if="exerciseHistory.length < cards.length"
+          ng-disabled="exercises.length != numberOfExercises"
+          ng-click="computeNextExercise()">
+            What goes next?
+        </button>
+        <span ng-if="nextExercise">
+            Gimme some {{ nextExercise.name }}: {{ nextExercise.reps}} reps
+        </span>
+        <button ng-if="exerciseHistory.length == cards.length" ng-click="done()">Done</button>
+    </div>
+
+    <div ng-if="exerciseHistory.length">
+        History
+        <table>
+            <tr>
+                <td>Exercise</td>
+                <td>Reps</td>
+                <td>Start time (in seconds)</td>
+            </tr>
+            <tr ng-repeat="ex in exerciseHistory">
+                <td>{{ex.name}}</td>
+                <td>{{ex.reps}}</td>
+                <td>{{ex.timeInSeconds}}</td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>
