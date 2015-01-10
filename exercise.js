@@ -1,4 +1,4 @@
-var app = angular.module('RetrhoRoullete', []);
+var app = angular.module('RetrhoRoulette', []);
 
 app.controller("ExerciseCtrl", function($scope) {
     initExerciseList();
@@ -48,12 +48,12 @@ app.controller("ExerciseCtrl", function($scope) {
         initNow();
         var nextReps = $scope.cards[$scope.nextCard++];
         var nextExercise = getRandomExercise(nextReps);
-        var animator = new RoulleteAnimator(nextExercise,
+        var animator = new RouletteAnimator(nextExercise,
             function() {
                 setNextExercise(nextExercise);
             }
         );
-        animator.animateRoullete();
+        animator.animateRoulette();
     }
 
     function initNow() {

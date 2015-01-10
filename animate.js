@@ -1,4 +1,4 @@
-function RoulleteAnimator(nextExercise, callback) {
+function RouletteAnimator(nextExercise, callback) {
     this.exerciseHelper = {
             nextItemList: 0,
             lapsRemaining: 3,
@@ -28,7 +28,7 @@ function RoulleteAnimator(nextExercise, callback) {
         ]
     };
 
-    this.animateRoullete = function() {
+    this.animateRoulette = function() {
         this.animateCategories();
     }
 
