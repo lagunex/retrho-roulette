@@ -80,7 +80,7 @@ app.controller("ExerciseCtrl", function($scope) {
 
     function setNextExercise(nextExercise) {
         $scope.nextExercise = nextExercise;
-        $scope.exerciseHistory.push(angular.copy(nextExercise));
+        $scope.exerciseHistory.unshift(angular.copy(nextExercise));
         $scope.$apply();
     }
 

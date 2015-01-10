@@ -80,7 +80,8 @@
         </div>
 
         <div ng-if="nextExercise" class="row">
-            Gimme some {{ nextExercise.name }}: {{ nextExercise.reps}} reps
+            <span ng-if="nextExercise.id > 0">Gimme some {{ nextExercise.name }}: {{ nextExercise.reps}} reps</span>
+            <span ng-if="nextExercise.id == 0">Take a rest and continue when you are ready</span>
         </div>
 
         <div class="row">
