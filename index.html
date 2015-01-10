@@ -2,54 +2,103 @@
 <html lang="en" ng-app="RetrhoRoullete">
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
     <title>Retrho Roullete</title>
+    <!-- Latest compiled and minified Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+
+    <!-- Latest compiled and minified Angular -->
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.8/angular.min.js"></script>
+
     <script src="exercise.js"></script>
 </head>
 
 <body ng-controller="ExerciseCtrl">
-    <div>
-        <div>Add {{ exercisesToAdd }} exercises to your workout</div>
-        <form ng-if="exercises.length < numberOfExercises" ng-submit="addExercise()">
-            Exercise: <input ng-model="newExercise" type="text" />
-            <input type="submit" value="Add" />
-        </form>
-        <div>
-            <ul>
-                <li ng-repeat="ex in exercises" class="{{ex.class}}">
+    <div class="container-fluid">
+       <div class="row">
+            <form
+             ng-if="exercises.length < numberOfExercises"
+             ng-submit="addExercise()"
+             class="form-inline">
+                <div class="row">
+                    <div class="col-xs-12">
+                        Add {{ exercisesToAdd }} exercises to your workout
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="sr-only" for="newExercise">Exercise</label>
+                    <input
+                      ng-model="newExercise"
+                      type="text"
+                      class="form-control"
+                      id="newExercise"
+                      placeholder="Exercise"/>
+                </div>
+                <button type="submit" class="btn btn-primary">Add</button>
+            </form>
+        </div>
+
+        <div class="row">
+            <div
+                 ng-repeat="cat in repsCategories"
+                 class="col-xs-6 {{cat.className}}">{{ cat.name }} ({{ cat.reps }} reps)
+            </div>
+        </div>
+
+        <div class="row">
+            <ul class="list-group">
+                <li
+                  ng-repeat="ex in exercises"
+                  class="{{ ex.className }}">
                     {{ ex.name }}
+                    <button
+                      ng-if="$index != 0"
+                      type="button"
+                      ng-click="deleteExercise($index)"
+                      class="close">
+                        <span>&times;</span>
+                    </button>
                 </li>
             </ul>
         </div>
-    </div>
 
-    <div>
-        <button
-          ng-if="exerciseHistory.length < cards.length"
-          ng-disabled="exercises.length != numberOfExercises"
-          ng-click="computeNextExercise()">
-            What goes next?
-        </button>
-        <span ng-if="nextExercise">
+        <div class="row">
+            <div class="col-xs-4">
+                <button
+                 ng-if="exerciseHistory.length < cards.length"
+                 ng-disabled="exercises.length != numberOfExercises"
+                 ng-click="computeNextExercise()"
+                 class="btn btn-success">
+                    What goes next?
+                </button>
+            </div>
+        </div>
+
+        <div ng-if="nextExercise" class="row">
             Gimme some {{ nextExercise.name }}: {{ nextExercise.reps}} reps
-        </span>
-        <button ng-if="exerciseHistory.length == cards.length" ng-click="done()">Done</button>
-    </div>
+        </div>
 
-    <div ng-if="exerciseHistory.length">
-        History
-        <table>
-            <tr>
-                <td>Exercise</td>
-                <td>Reps</td>
-                <td>Start time (in seconds)</td>
-            </tr>
-            <tr ng-repeat="ex in exerciseHistory">
-                <td>{{ex.name}}</td>
-                <td>{{ex.reps}}</td>
-                <td>{{ex.timeInSeconds}}</td>
-            </tr>
-        </table>
+        <div class="row">
+            <button ng-if="exerciseHistory.length == cards.length" ng-click="done()">Done</button>
+        </div>
+
+        <div class="row">
+            <table ng-if="exerciseHistory.length" class="table table-condensed">
+                <caption>History</caption>
+                <tr>
+                    <td>Exercise</td>
+                    <td>Reps</td>
+                    <td>Start time (in seconds)</td>
+                </tr>
+                <tr ng-repeat="ex in exerciseHistory">
+                    <td>{{ex.name}}</td>
+                    <td>{{ex.reps}}</td>
+                    <td>{{ex.timeInSeconds}}</td>
+                </tr>
+            </table>
+        </div>
     </div>
 </body>
 </html>

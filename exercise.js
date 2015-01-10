@@ -3,12 +3,13 @@ var app = angular.module('RetrhoRoullete', []);
 app.controller("ExerciseCtrl", function($scope) {
     initExerciseList();
     initCardDeck();
+    initRepsCategories();
 
     function initExerciseList() {
         $scope.exercisesToAdd = 5;
         $scope.numberOfExercises = $scope.exercisesToAdd+1;
         $scope.exercises = [
-            {name: "Skip reps", className: "default"}
+            {name: "Skip reps", className: classes.item}
         ];
         $scope.exerciseHistory = [];
     }
@@ -25,17 +26,31 @@ app.controller("ExerciseCtrl", function($scope) {
         util.shuffle($scope.cards);
     }
 
+    function initRepsCategories() {
+        $scope.repsCategories = [
+            { name: 'Easy', reps: '2-4', className:"bg-success" },
+            { name: 'Normal', reps: '5-7', className:"bg-info"},
+            { name: 'Hard', reps: '8-10', className:"bg-warning"},
+            { name: 'Hero', reps: '15 0', className:"bg-danger"}
+        ];
+    }
+
     $scope.addExercise = function () {
         if (this.newExercise) {
-            $scope.exercises.push({name: this.newExercise, className: "default"});
+            $scope.exercises.push({name: this.newExercise, className: classes.item});
             this.newExercise = "";
         }
     }
 
+    $scope.deleteExercise = function(index) {
+        $scope.exercises.splice(index,1);
+    }
+
     $scope.computeNextExercise = function() {
         initNow();
-        $scope.nextExercise = getRandomExercise();
-        $scope.exerciseHistory.push(angular.copy($scope.nextExercise));
+        var nextExercise = getRandomExercise();
+        initAnimateHelper(nextExercise);
+        animateExerciseList();
     }
 
     function initNow() {
@@ -48,6 +63,7 @@ app.controller("ExerciseCtrl", function($scope) {
         var randomIndex = Math.floor(Math.random() * $scope.exercises.length);
         var startTime = initStartTime();
         return {
+            id: randomIndex,
             name: $scope.exercises[randomIndex].name,
             reps: $scope.cards[$scope.nextCard++],
             timeInSeconds: Math.floor(startTime / 1000)
@@ -57,6 +73,45 @@ app.controller("ExerciseCtrl", function($scope) {
     function initStartTime() {
         var currentTime = new Date().getTime();
         return currentTime - $scope.now;
+    }
+
+    function initAnimateHelper(nextExercise) {
+        animateHelper = {
+            nextItemList: 0,
+            lapsRemaining: 3,
+            time: 100,
+            timeDuringLastLap: 300,
+            nextExercise: nextExercise
+        };
+    }
+
+    function animateExerciseList() {
+        var exerciseListDom = document.getElementsByClassName(classes.item);
+        exerciseListDom[animateHelper.nextItemList].className = classes.item;
+
+        animateHelper.nextItemList = (animateHelper.nextItemList + 1) % $scope.exercises.length;
+        if (animateHelper.nextItemList == 0) {
+            if (--animateHelper.lapsRemaining == 0) {
+                animateHelper.time = animateHelper.timeDuringLastLap;
+            }
+        }
+
+        exerciseListDom[animateHelper.nextItemList].className = classes.item+' '+classes.active;
+
+        if (animateHelper.lapsRemaining ||
+                animateHelper.nextItemList != animateHelper.nextExercise.id) {
+            setTimeout(animateExerciseList, animateHelper.time);
+        } else {
+            exerciseListDom[animateHelper.nextItemList].className =
+                classes.item+' '+classes.success;
+            setNextExercise(animateHelper.nextExercise);
+        }
+    }
+
+    function setNextExercise(nextExercise) {
+        $scope.nextExercise = nextExercise;
+        $scope.exerciseHistory.push(angular.copy(nextExercise));
+        $scope.$apply();
     }
 
     $scope.done = function() {
@@ -69,6 +124,14 @@ app.controller("ExerciseCtrl", function($scope) {
         delete $scope.nextExercise;
     }
 });
+
+var classes = {
+    item: 'list-group-item',
+    active: 'active',
+    success: 'list-group-item-success'
+};
+
+var animateHelper = {};
 
 var util = {};
 util.shuffle = function shuffle(array) {
