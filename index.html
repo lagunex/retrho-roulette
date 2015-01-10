@@ -11,6 +11,8 @@
     <!-- Latest compiled and minified Angular -->
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.8/angular.min.js"></script>
 
+    <script src="util.js"></script>
+    <script src="animate.js"></script>
     <script src="exercise.js"></script>
 </head>
 
@@ -42,8 +44,9 @@
 
         <div class="row">
             <div
-                 ng-repeat="cat in repsCategories"
-                 class="col-xs-6 {{cat.className}}">{{ cat.name }} ({{ cat.reps }} reps)
+              ng-repeat="cat in repsCategories"
+              class="col-xs-6 rep-category {{cat.className}}">
+                {{ cat.name }} ({{cat.reps}} reps)
             </div>
         </div>
 
@@ -51,7 +54,7 @@
             <ul class="list-group">
                 <li
                   ng-repeat="ex in exercises"
-                  class="{{ ex.className }}">
+                  class="list-group-item">
                     {{ ex.name }}
                     <button
                       ng-if="$index != 0"
@@ -94,7 +97,7 @@
                 </tr>
                 <tr ng-repeat="ex in exerciseHistory">
                     <td>{{ex.name}}</td>
-                    <td>{{ex.reps}}</td>
+                    <td><span ng-if="ex.id > 0">{{ex.reps}}</span></td>
                     <td>{{ex.timeInSeconds}}</td>
                 </tr>
             </table>

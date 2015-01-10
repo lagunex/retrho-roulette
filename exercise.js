@@ -8,9 +8,7 @@ app.controller("ExerciseCtrl", function($scope) {
     function initExerciseList() {
         $scope.exercisesToAdd = 5;
         $scope.numberOfExercises = $scope.exercisesToAdd+1;
-        $scope.exercises = [
-            {name: "Skip reps", className: classes.item}
-        ];
+        $scope.exercises = [ { name: "Skip reps" }];
         $scope.exerciseHistory = [];
     }
 
@@ -31,13 +29,13 @@ app.controller("ExerciseCtrl", function($scope) {
             { name: 'Easy', reps: '2-4', className:"bg-success" },
             { name: 'Normal', reps: '5-7', className:"bg-info"},
             { name: 'Hard', reps: '8-10', className:"bg-warning"},
-            { name: 'Hero', reps: '15 0', className:"bg-danger"}
+            { name: 'Hero', reps: '15 or 20', className:"bg-danger"}
         ];
     }
 
     $scope.addExercise = function () {
         if (this.newExercise) {
-            $scope.exercises.push({name: this.newExercise, className: classes.item});
+            $scope.exercises.push({ name: this.newExercise });
             this.newExercise = "";
         }
     }
@@ -48,9 +46,14 @@ app.controller("ExerciseCtrl", function($scope) {
 
     $scope.computeNextExercise = function() {
         initNow();
-        var nextExercise = getRandomExercise();
-        initAnimateHelper(nextExercise);
-        animateExerciseList();
+        var nextReps = $scope.cards[$scope.nextCard++];
+        var nextExercise = getRandomExercise(nextReps);
+        var animator = new RoulleteAnimator(nextExercise,
+            function() {
+                setNextExercise(nextExercise);
+            }
+        );
+        animator.animateRoullete();
     }
 
     function initNow() {
@@ -59,13 +62,13 @@ app.controller("ExerciseCtrl", function($scope) {
         }
     }
 
-    function getRandomExercise() {
+    function getRandomExercise(nextReps) {
         var randomIndex = Math.floor(Math.random() * $scope.exercises.length);
         var startTime = initStartTime();
         return {
             id: randomIndex,
             name: $scope.exercises[randomIndex].name,
-            reps: $scope.cards[$scope.nextCard++],
+            reps: nextReps,
             timeInSeconds: Math.floor(startTime / 1000)
         };
     }
@@ -73,39 +76,6 @@ app.controller("ExerciseCtrl", function($scope) {
     function initStartTime() {
         var currentTime = new Date().getTime();
         return currentTime - $scope.now;
-    }
-
-    function initAnimateHelper(nextExercise) {
-        animateHelper = {
-            nextItemList: 0,
-            lapsRemaining: 3,
-            time: 100,
-            timeDuringLastLap: 300,
-            nextExercise: nextExercise
-        };
-    }
-
-    function animateExerciseList() {
-        var exerciseListDom = document.getElementsByClassName(classes.item);
-        exerciseListDom[animateHelper.nextItemList].className = classes.item;
-
-        animateHelper.nextItemList = (animateHelper.nextItemList + 1) % $scope.exercises.length;
-        if (animateHelper.nextItemList == 0) {
-            if (--animateHelper.lapsRemaining == 0) {
-                animateHelper.time = animateHelper.timeDuringLastLap;
-            }
-        }
-
-        exerciseListDom[animateHelper.nextItemList].className = classes.item+' '+classes.active;
-
-        if (animateHelper.lapsRemaining ||
-                animateHelper.nextItemList != animateHelper.nextExercise.id) {
-            setTimeout(animateExerciseList, animateHelper.time);
-        } else {
-            exerciseListDom[animateHelper.nextItemList].className =
-                classes.item+' '+classes.success;
-            setNextExercise(animateHelper.nextExercise);
-        }
     }
 
     function setNextExercise(nextExercise) {
@@ -125,30 +95,3 @@ app.controller("ExerciseCtrl", function($scope) {
     }
 });
 
-var classes = {
-    item: 'list-group-item',
-    active: 'active',
-    success: 'list-group-item-success'
-};
-
-var animateHelper = {};
-
-var util = {};
-util.shuffle = function shuffle(array) {
-    var currentIndex = array.length, temporaryValue, randomIndex ;
-
-    // While there remain elements to shuffle...
-    while (0 !== currentIndex) {
-
-        // Pick a remaining element...
-        randomIndex = Math.floor(Math.random() * currentIndex);
-        currentIndex -= 1;
-
-        // And swap it with the current element.
-        temporaryValue = array[currentIndex];
-        array[currentIndex] = array[randomIndex];
-        array[randomIndex] = temporaryValue;
-    }
-
-    return array;
-};
