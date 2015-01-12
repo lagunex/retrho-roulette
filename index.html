@@ -99,24 +99,25 @@
 
                         <!--{{{ Button for next exercise -->
                         <div class="row">
-                            <div class="col-xs-4">
-                                <button
-                                  ng-if="exerciseHistory.length < cards.length"
-                                  ng-disabled="exercises.length != numberOfExercises"
-                                  ng-click="computeNextExercise()"
-                                  class="btn btn-success">
-                                    Next exercise
-                                </button>
-                                <button
-                                  ng-if="exerciseHistory.length == cards.length"
-                                  ng-click="done()"
-                                  class="btn btn-success">
-                                    You did it
-                                </button>
+                            <button
+                             ng-if="exerciseHistory.length < cards.length"
+                             ng-disabled="exercises.length != numberOfExercises"
+                             ng-click="computeNextExercise()"
+                             class="center-block btn btn-success">
+                                Next exercise
+                            </button>
+                            <button
+                             ng-if="exerciseHistory.length == cards.length"
+                             ng-click="done()"
+                             class="center-block btn btn-success">
+                                You did it
+                            </button>
                             </div>
-                            <div ng-if="nextExercise" class="col-xs-8">
+                            <div class="alert {{ nextExercise.alertClass }}"
+                                 ng-if="nextExercise">
+                                {{ nextExercise.timeInMilli | date:'mm:ss -' }}
                                 <span ng-if="nextExercise.id > 0">
-                                    Gimme some {{ nextExercise.name }}: {{ nextExercise.reps}} reps
+                                    {{ nextExercise.reps }} {{ nextExercise.name }}
                                 </span>
                                 <span ng-if="nextExercise.id == 0">
                                     Take a rest and continue when you are ready
@@ -152,7 +153,7 @@
                 </div>
                 <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
                     <div class="panel-body">
-                        <table ng-if="exerciseHistory.length" class="table table-condensed">
+                        <table ng-if="showTotals" class="table table-condensed">
                             <caption>Totals</caption>
                             <tr>
                                 <th>Exercise</th>
