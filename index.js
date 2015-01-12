@@ -130,12 +130,7 @@ app.controller("ExerciseCtrl", function($scope) {
 
     $scope.done = function() {
         //{{{
-        var startTime = getStartTime();
-        $scope.exerciseHistory.push({
-            name: 'Done',
-            reps: 0,
-            timeInSeconds : Math.floor(startTime / 1000)
-        });
+        $scope.totalTime = getStartTime();
         $scope.showTotals = true;
         delete $scope.nextExercise;
         showResults();

@@ -121,7 +121,7 @@
                              ng-if="exerciseHistory.length == cards.length"
                              ng-click="done()"
                              class="center-block btn btn-success">
-                                You did it
+                                Great job!
                             </button>
                             </div>
                             <div class="alert {{ nextExercise.alertClass }}"
@@ -165,7 +165,7 @@
                 <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
                     <div class="panel-body">
                         <table ng-if="showTotals" class="table table-condensed">
-                            <caption>Totals</caption>
+                            <caption>Total time: {{ totalTime | date:'mm:ss' }}</caption>
                             <tr>
                                 <th>Exercise</th>
                                 <th>Total reps</th>
