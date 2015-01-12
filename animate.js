@@ -21,8 +21,10 @@ function RouletteAnimator(nextExercise, callback) {
         success: 'list-group-item-success'
     };
     this.categoryClasses = {
-        item: 'col-xs-6 rep-category',
+        item: 'col-xs-3 rep-category',
         classes: ['bg-success', 'bg-info', 'bg-warning', 'bg-danger'],
+        progress: ['progress-bar-success', 'progress-bar-info',
+            'progress-bar-warning', 'progress-bar-danger'],
         ranges: [
             {min: 2, max: 4}, {min: 5, max: 7}, {min: 8, max: 10}, {min: 15, max: 20}
         ]
@@ -74,7 +76,7 @@ function RouletteAnimator(nextExercise, callback) {
     this.animateExerciseList = function() {
         var helper = this.exerciseHelper;
         var classes = this.exerciseClasses;
-        var exerciseListDom = document.getElementsByClassName(classes.item);
+        var exerciseListDom = document.querySelectorAll('#collapseTwo .'+classes.item);
 
         this.resetCurrentElementClass(exerciseListDom, helper, classes);
         this.updateNextItemIndex(exerciseListDom, helper, classes);
@@ -86,7 +88,36 @@ function RouletteAnimator(nextExercise, callback) {
             setTimeout(function(){that.animateExerciseList();}, helper.time);
         } else {
             this.setActiveElement(exerciseListDom, helper, classes.item, classes.success);
-            this.callback();
+            this.animateProgressBar();
         }
+    }
+
+    this.animateProgressBar = function() {
+        var progressBarColor = this.getProgressBarColor();
+        var progressBarElement = this.createProgressBarElement(2, progressBarColor);
+        document.querySelectorAll('.progress')[0].appendChild(progressBarElement);
+        this.callback();
+    }
+
+    this.getProgressBarColor = function() {
+        var currentReps = this.categoryHelper.reps;
+        var categoryIndex = 0;
+        var found = false;
+        while (!found) {
+            if (this.categoryClasses.ranges[categoryIndex].min <= currentReps &&
+                    this.categoryClasses.ranges[categoryIndex].max >= currentReps) {
+                found = true;
+            } else {
+                categoryIndex++;
+            }
+        }
+        return this.categoryClasses.progress[categoryIndex];
+    }
+
+    this.createProgressBarElement = function(percentage, colorClass) {
+        var element = document.createElement('div');
+        element.className = 'progress-bar '+colorClass;
+        element.style.width = percentage+'%';
+        return element;
     }
 }

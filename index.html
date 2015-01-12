@@ -83,12 +83,11 @@
                         <div class="row">
                             <div
                              ng-repeat="cat in repsCategories"
-                             class="col-xs-6 rep-category {{cat.className}}">
-                                {{ cat.name }} ({{cat.reps}} reps)
+                             class="col-xs-3 rep-category {{cat.className}}">
+                                <img ng-src="img/{{ cat.icon }}" class="img-responsive"/>
                             </div>
                         </div>
                         <!--}}} -->
-
 
                         <!--{{{ Exercise list -->
                         <ul class="list-group">
@@ -102,24 +101,32 @@
                         <div class="row">
                             <div class="col-xs-4">
                                 <button
-                                 ng-if="exerciseHistory.length < cards.length"
-                                 ng-disabled="exercises.length != numberOfExercises"
-                                 ng-click="computeNextExercise()"
-                                 class="btn btn-success">
-                                    What goes next?
+                                  ng-if="exerciseHistory.length < cards.length"
+                                  ng-disabled="exercises.length != numberOfExercises"
+                                  ng-click="computeNextExercise()"
+                                  class="btn btn-success">
+                                    Next exercise
                                 </button>
+                                <button
+                                  ng-if="exerciseHistory.length == cards.length"
+                                  ng-click="done()"
+                                  class="btn btn-success">
+                                    You did it
+                                </button>
+                            </div>
+                            <div ng-if="nextExercise" class="col-xs-8">
+                                <span ng-if="nextExercise.id > 0">
+                                    Gimme some {{ nextExercise.name }}: {{ nextExercise.reps}} reps
+                                </span>
+                                <span ng-if="nextExercise.id == 0">
+                                    Take a rest and continue when you are ready
+                                </span>
                             </div>
                         </div>
                         <!--}}} -->
 
-                        <!--{{{ Message for next exercise -->
-                        <div ng-if="nextExercise" class="row">
-                            <span ng-if="nextExercise.id > 0">Gimme some {{ nextExercise.name }}: {{ nextExercise.reps}} reps</span>
-                            <span ng-if="nextExercise.id == 0">Take a rest and continue when you are ready</span>
-                        </div>
-
-                        <div class="row">
-                            <button ng-if="exerciseHistory.length == cards.length" ng-click="done()">Done</button>
+                        <!--{{{ Progress bar -->
+                        <div class="progress">
                         </div>
                         <!--}}} -->
                     </div>
@@ -146,16 +153,27 @@
                 <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
                     <div class="panel-body">
                         <table ng-if="exerciseHistory.length" class="table table-condensed">
+                            <caption>Totals</caption>
+                            <tr>
+                                <th>Exercise</th>
+                                <th>Total reps</th>
+                            </tr>
+                            <tr ng-repeat="ex in exercises">
+                                <td>{{ ex.name }}</td>
+                                <td>{{ ex.totalReps }}</td>
+                            </tr>
+                        </table>
+                        <table ng-if="exerciseHistory.length" class="table table-condensed">
                             <caption>History</caption>
                             <tr>
-                                <td>Exercise</td>
-                                <td>Reps</td>
-                                <td>Start time (in seconds)</td>
+                                <th>Exercise</th>
+                                <th>Reps</th>
+                                <th>Start time</th>
                             </tr>
                             <tr ng-repeat="ex in exerciseHistory">
                                 <td>{{ex.name}}</td>
                                 <td><span ng-if="ex.id > 0">{{ex.reps}}</span></td>
-                                <td>{{ex.timeInSeconds}}</td>
+                                <td>{{ex.timeInMilli | date : 'mm:ss' }}</td>
                             </tr>
                         </table>
                     </div>

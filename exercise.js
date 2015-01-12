@@ -8,7 +8,7 @@ app.controller("ExerciseCtrl", function($scope) {
     function initExerciseList() {
         $scope.exercisesToAdd = 5;
         $scope.numberOfExercises = $scope.exercisesToAdd+1;
-        $scope.exercises = [ { name: "Skip reps" }];
+        $scope.exercises = [ { name: "Skip reps", totalReps: 0 }];
         $scope.exerciseHistory = [];
     }
 
@@ -26,16 +26,16 @@ app.controller("ExerciseCtrl", function($scope) {
 
     function initRepsCategories() {
         $scope.repsCategories = [
-            { name: 'Easy', reps: '2-4', className:"bg-success" },
-            { name: 'Normal', reps: '5-7', className:"bg-info"},
-            { name: 'Hard', reps: '8-10', className:"bg-warning"},
-            { name: 'Hero', reps: '15 or 20', className:"bg-danger"}
+            { name: 'Easy', reps: '2-4', className:"bg-success", icon: "easy-color.png" },
+            { name: 'Normal', reps: '5-7', className:"bg-info", icon: "normal-color.png"},
+            { name: 'Hard', reps: '8-10', className:"bg-warning", icon: "hard-color.png"},
+            { name: 'Hero', reps: '15 or 20', className:"bg-danger", icon: "hero-color.png"}
         ];
     }
 
     $scope.addExercise = function () {
         if (this.newExercise) {
-            $scope.exercises.push({ name: this.newExercise });
+            $scope.exercises.push({ name: this.newExercise, totalReps: 0 });
             this.newExercise = "";
         }
     }
@@ -64,34 +64,41 @@ app.controller("ExerciseCtrl", function($scope) {
 
     function getRandomExercise(nextReps) {
         var randomIndex = Math.floor(Math.random() * $scope.exercises.length);
-        var startTime = initStartTime();
+        var startTime = getStartTime();
         return {
             id: randomIndex,
             name: $scope.exercises[randomIndex].name,
             reps: nextReps,
-            timeInSeconds: Math.floor(startTime / 1000)
+            timeInMilli: startTime
         };
     }
 
-    function initStartTime() {
+    function getStartTime() {
         var currentTime = new Date().getTime();
         return currentTime - $scope.now;
     }
 
     function setNextExercise(nextExercise) {
+        $scope.exercises[nextExercise.id].totalReps += nextExercise.reps;
         $scope.nextExercise = nextExercise;
         $scope.exerciseHistory.unshift(angular.copy(nextExercise));
         $scope.$apply();
     }
 
     $scope.done = function() {
-        var startTime = initStartTime();
+        var startTime = getStartTime();
         $scope.exerciseHistory.push({
             name: 'Done',
             reps: 0,
             timeInSeconds : Math.floor(startTime / 1000)
         });
         delete $scope.nextExercise;
+        showResults();
+    }
+
+    function showResults() {
+        $('#collapseTwo').collapse('hide');
+        $('#collapseThree').collapse('show');
     }
 });
 
