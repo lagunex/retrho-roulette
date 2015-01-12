@@ -10,6 +10,11 @@ app.controller("ExerciseCtrl", function($scope) {
         $scope.numberOfExercises = $scope.exercisesToAdd+1;
         $scope.exercises = [ { name: "Skip reps", totalReps: 0 }];
         $scope.exerciseHistory = [];
+        $scope.predefinedExercises = [
+            "Push-ups", "Pull-ups", "Lunges", "Squats", "Jumping Jacks",
+            "Planks", "Inverted rows", "Double unders", "Dips", "Reverse Crunches",
+            "Bench Press", "Deadlifts", "Burpees", "Box Jumps", "Chin-ups"
+        ];
     }
 
     function initCardDeck() {
@@ -39,9 +44,17 @@ app.controller("ExerciseCtrl", function($scope) {
 
     $scope.addExercise = function () {
         if (this.newExercise) {
-            $scope.exercises.push({ name: this.newExercise, totalReps: 0 });
-            this.newExercise = "";
+            $scope.addExerciseByName(this.newExercise);
+            this.newExercise = '';
         }
+    }
+
+    $scope.addExerciseByName = function(name) {
+        $scope.exercises.push({ name: name, totalReps: 0 });
+    }
+
+    $scope.addPredefinedExercise = function() {
+        $scope.addExerciseByName(this.ex);
     }
 
     $scope.deleteExercise = function(index) {
@@ -49,6 +62,7 @@ app.controller("ExerciseCtrl", function($scope) {
     }
 
     $scope.computeNextExercise = function() {
+        //{{{
         initNow();
         var nextReps = getNextReps();
         var nextExercise = getRandomExercise(nextReps);
@@ -60,9 +74,11 @@ app.controller("ExerciseCtrl", function($scope) {
                 });
             });
         });
+        //}}}
     }
 
     function getNextReps() {
+        //{{{
         var reps = $scope.cards[$scope.nextCard++];
         var index = 0;
         $scope.repsCategories.forEach(function(cat, catIndex) {
@@ -71,6 +87,7 @@ app.controller("ExerciseCtrl", function($scope) {
             }
         });
         return { reps: reps, id: index};
+        //}}}
     }
 
     function initNow() {
@@ -130,6 +147,11 @@ app.controller("ExerciseCtrl", function($scope) {
         $('#collapseTwo').collapse('hide');
         $('#collapseThree').collapse('show');
         //}}}
+    }
+
+    $scope.completeSetUp = function() {
+        $('#collapseOne').collapse('hide');
+        $('#collapseTwo').collapse('show');
     }
 });
 

@@ -7,6 +7,7 @@
 
     <title>Retrho Roulette</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="index.css">
     <!--}}} -->
 </head>
 
@@ -36,13 +37,18 @@
                          ng-submit="addExercise()">
                             <div class="form-group">
                                 <label for="newExercise">
-                                    Add {{ exercisesToAdd }} exercises to your workout:
+                                    Write an exercise or add it from the list:
                                 </label>
                                 <input type="text" class="form-control" id="newExercise"
                                   ng-model="newExercise"/>
                             </div>
                             <button type="submit" class="btn btn-primary">Add</button>
                         </form>
+                        <div ng-if="exercises.length < numberOfExercises">
+                            <span class="label label-default"
+                             ng-repeat="ex in predefinedExercises"
+                             ng-click="addPredefinedExercise()">{{ ex }}</span>
+                        </div>
                         <ul class="list-group">
                             <li class="list-group-item"
                               ng-repeat="ex in exercises"
@@ -55,6 +61,11 @@
                                 </button>
                             </li>
                         </ul>
+                        <div ng-if="exercises.length == numberOfExercises">
+                            <button class="btn btn-success" ng-click="completeSetUp()">
+                                Continue
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -117,7 +128,7 @@
                                  ng-if="nextExercise">
                                 {{ nextExercise.timeInMilli | date:'mm:ss -' }}
                                 <span ng-if="nextExercise.id > 0">
-                                    {{ nextExercise.reps }} {{ nextExercise.name }}
+                                    Do {{ nextExercise.reps }} {{ nextExercise.name }}
                                 </span>
                                 <span ng-if="nextExercise.id == 0">
                                     Take a rest and continue when you are ready
@@ -190,7 +201,7 @@
 
     <script src="util.js"></script>
     <script src="animate.js"></script>
-    <script src="exercise.js"></script>
+    <script src="index.js"></script>
     <!--}}} -->
 </body>
 </html>
