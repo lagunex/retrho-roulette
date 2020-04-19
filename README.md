@@ -8,5 +8,5 @@ The webapp is built using:
 - Bootstrap.
 - JQuery.
 
-See it online at http://lagunex.com/nfa/retrho-roulette
+See it online at http://lagunex.me/nfa/retrho-roulette
 
